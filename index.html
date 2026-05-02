@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>JJSPLAY</title>
@@ -8,169 +8,20 @@
 <style>
 body {
   margin:0;
-  font-family: Arial;
   background:#0f172a;
-  color:#fff;
 }
 
-.login {
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-}
-
-h1 {
-  color:#38bdf8;
-}
-
-input, button {
-  margin:8px;
-  padding:14px;
-  width:260px;
-  border-radius:8px;
-  border:none;
-  font-size:16px;
-}
-
-button {
-  background:#38bdf8;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-button:active {
-  opacity:0.7;
-}
-
-video {
+iframe {
   width:100%;
   height:100vh;
-  background:black;
+  border:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="login" id="login">
-  <h1>JJSPLAY</h1>
-  <input id="user" placeholder="Usuário">
-  <input id="pass" type="password" placeholder="Senha">
-  <button id="btn">Entrar</button>
-</div>
-
-<video id="video" controls autoplay style="display:none"></video>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-<script>
-document.getElementById("btn").addEventListener("click", entrar);
-
-function entrar() {
-  let user = document.getElementById("user").value;
-  let pass = document.getElementById("pass").value;
-
-  if(!user || !pass){
-    alert("Preencha usuário e senha");
-    return;
-  }
-
-  let servidor = "http://tzprosata.fun:8080";
-
-  let api = servidor + "/get.php?username=" + user + "&password=" + pass + "&type=m3u_plus";
-
-  let proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(api);
-
-  fetch(proxy)
-  .then(res => res.text())
-  .then(data => {
-
-    let linhas = data.split("\n");
-    let stream = linhas.find(l => l.startsWith("http"));
-
-    if (!stream) {
-      alert("Login inválido!");
-      return;
-    }
-
-    iniciarPlayer(stream);
-  })
-  .catch(() => {
-    alert("Erro ao conectar!");
-  });
-}
-
-function iniciarPlayer(link) {
-  document.getElementById("login").style.display = "none";
-
-  let video = document.getElementById("video");
-  video.style.display = "block";
-
-  if (Hls.isSupported()) {
-    let hls = new Hls();
-    hls.loadSource(link);
-    hls.attachMedia(video);
-  } else {
-    video.src = link;
-  }
-}
-</<script>
-document.getElementById("btn").addEventListener("click", entrar);
-
-function entrar() {
-  let user = document.getElementById("user").value;
-  let pass = document.getElementById("pass").value;
-
-  let servidor = "http://tzprosata.fun:8080";
-
-  let api = servidor + "/get.php?username=" + user + "&password=" + pass + "&type=m3u_plus";
-
-  let proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(api);
-
-  fetch(proxy)
-  .then(res => res.text())
-  .then(data => {
-
-    let linhas = data.split("\n");
-
-    let stream = null;
-
-    for (let i = 0; i < linhas.length; i++) {
-      if (linhas[i].startsWith("#EXTINF")) {
-        stream = linhas[i + 1];
-        break;
-      }
-    }
-
-    if (!stream || !stream.startsWith("http")) {
-      alert("Não encontrou canal na lista!");
-      return;
-    }
-
-    iniciarPlayer(stream);
-  })
-  .catch(() => {
-    alert("Erro ao conectar!");
-  });
-}
-
-function iniciarPlayer(link) {
-  document.getElementById("login").style.display = "none";
-
-  let video = document.getElementById("video");
-  video.style.display = "block";
-
-  if (Hls.isSupported()) {
-    let hls = new Hls();
-    hls.loadSource(link);
-    hls.attachMedia(video);
-  } else {
-    video.src = link;
-  }
-}
-      </script>>
+<iframe src="https://opentvplayer.com"></iframe>
 
 </body>
 </html>
