@@ -116,7 +116,61 @@ function iniciarPlayer(link) {
     video.src = link;
   }
 }
-</script>
+</<script>
+document.getElementById("btn").addEventListener("click", entrar);
+
+function entrar() {
+  let user = document.getElementById("user").value;
+  let pass = document.getElementById("pass").value;
+
+  let servidor = "http://tzprosata.fun:8080";
+
+  let api = servidor + "/get.php?username=" + user + "&password=" + pass + "&type=m3u_plus";
+
+  let proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(api);
+
+  fetch(proxy)
+  .then(res => res.text())
+  .then(data => {
+
+    let linhas = data.split("\n");
+
+    let stream = null;
+
+    for (let i = 0; i < linhas.length; i++) {
+      if (linhas[i].startsWith("#EXTINF")) {
+        stream = linhas[i + 1];
+        break;
+      }
+    }
+
+    if (!stream || !stream.startsWith("http")) {
+      alert("Não encontrou canal na lista!");
+      return;
+    }
+
+    iniciarPlayer(stream);
+  })
+  .catch(() => {
+    alert("Erro ao conectar!");
+  });
+}
+
+function iniciarPlayer(link) {
+  document.getElementById("login").style.display = "none";
+
+  let video = document.getElementById("video");
+  video.style.display = "block";
+
+  if (Hls.isSupported()) {
+    let hls = new Hls();
+    hls.loadSource(link);
+    hls.attachMedia(video);
+  } else {
+    video.src = link;
+  }
+}
+      </script>>
 
 </body>
 </html>
