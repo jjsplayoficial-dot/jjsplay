@@ -8,7 +8,7 @@
 <style>
 body {
   margin:0;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background:#0f172a;
   color:#fff;
 }
@@ -21,33 +21,21 @@ body {
   flex-direction:column;
 }
 
-.login h1 {
+h1 {
   color:#38bdf8;
-  margin-bottom:20px;
-  font-size:32px;
 }
 
-input {
-  padding:12px;
+input, button {
   margin:8px;
-  width:250px;
-  border:none;
+  padding:12px;
+  width:260px;
   border-radius:8px;
+  border:none;
 }
 
 button {
-  padding:12px;
-  width:270px;
   background:#38bdf8;
-  border:none;
-  border-radius:8px;
-  color:#000;
   font-weight:bold;
-  cursor:pointer;
-}
-
-.player {
-  display:none;
 }
 
 video {
@@ -62,14 +50,12 @@ video {
 
 <div class="login" id="login">
   <h1>JJSPLAY</h1>
-  <input type="text" id="user" placeholder="Usuário">
-  <input type="password" id="pass" placeholder="Senha">
-  <button onclick="entrar()">ENTRAR</button>
+  <input id="user" placeholder="Usuário">
+  <input id="pass" type="password" placeholder="Senha">
+  <button onclick="entrar()">Entrar</button>
 </div>
 
-<div class="player" id="player">
-  <video id="video" controls autoplay></video>
-</div>
+<video id="video" controls autoplay style="display:none"></video>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -78,34 +64,36 @@ function entrar() {
   let user = document.getElementById("user").value;
   let pass = document.getElementById("pass").value;
 
-  // 🔥 SEU SERVIDOR JÁ CONFIGURADO
   let servidor = "http://tzprosata.fun:8080";
 
-  let url = servidor + "/get.php?username=" + user + "&password=" + pass + "&type=m3u_plus&output=ts";
+  let api = servidor + "/get.php?username=" + user + "&password=" + pass + "&type=m3u_plus";
 
-  fetch(url)
+  let proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(api);
+
+  fetch(proxy)
   .then(res => res.text())
   .then(data => {
+
     let linhas = data.split("\n");
     let stream = linhas.find(l => l.startsWith("http"));
 
     if (!stream) {
-      alert("Login inválido ou lista vazia!");
+      alert("Login inválido!");
       return;
     }
 
     iniciarPlayer(stream);
   })
   .catch(() => {
-    alert("Erro ao conectar no servidor!");
+    alert("Erro ao conectar!");
   });
 }
 
 function iniciarPlayer(link) {
   document.getElementById("login").style.display = "none";
-  document.getElementById("player").style.display = "block";
 
   let video = document.getElementById("video");
+  video.style.display = "block";
 
   if (Hls.isSupported()) {
     let hls = new Hls();
